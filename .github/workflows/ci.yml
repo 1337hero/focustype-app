@@ -1,0 +1,41 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: 1.91.1
+          components: rustfmt, clippy
+
+      - uses: Swatinem/rust-cache@v2
+
+      # Needed for compiling Tauri on Linux.
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            build-essential \
+            pkg-config \
+            libgtk-3-dev \
+            libwebkit2gtk-4.1-dev \
+            librsvg2-dev \
+            patchelf
+          # Ubuntu 24.04 uses Ayatana; older images still provide libappindicator3-dev.
+          sudo apt-get install -y libayatana-appindicator3-dev || sudo apt-get install -y libappindicator3-dev
+
+      - name: fmt
+        run: cargo fmt --all --check
+
+      - name: clippy
+        run: cargo clippy -p inkwell-solid --all-targets --all-features -- -D warnings
+
+      - name: test
+        run: cargo test -p inkwell-solid --all-targets --all-features

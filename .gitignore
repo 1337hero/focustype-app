@@ -1,0 +1,49 @@
+#1337Hero's Overkill Git Ignore!
+
+# dependencies
+node_modules/
+.pnp/
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# Build outputs
+dist/
+src-tauri/target/
+target/
+
+# Generated
+src-tauri/gen/
+
+# Logs
+*.log
+npm-debug.log*
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.Spotlight-V100
+Thumbs.db
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Lock files
+src-tauri/Cargo.lock
+
+
+#AI Agents
+.claude
+CLAUDE.md
+GEMINI.md
