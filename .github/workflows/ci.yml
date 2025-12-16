@@ -35,7 +35,7 @@ jobs:
         run: cargo fmt --all --check
 
       - name: clippy
-        run: cargo clippy -p inkwell-solid --all-targets --all-features -- -D warnings
+        run: cargo clippy -p focustype --all-targets -- -D warnings
 
       - name: test
-        run: cargo test -p inkwell-solid --all-targets --all-features
+        run: cargo test -p focustype --all-targets

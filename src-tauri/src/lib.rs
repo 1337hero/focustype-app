@@ -12,7 +12,11 @@
 #![allow(clippy::must_use_candidate)]
 
 use serde::Serialize;
-use std::{fs, path::PathBuf, sync::Mutex};
+use std::{
+    fs,
+    path::{Path, PathBuf},
+    sync::Mutex,
+};
 use tauri::AppHandle;
 use tauri_plugin_dialog::DialogExt;
 use thiserror::Error;
@@ -69,7 +73,7 @@ struct OpenedFile {
     content: String,
 }
 
-fn filename_from_path(path: &PathBuf) -> String {
+fn filename_from_path(path: &Path) -> String {
     path.file_name()
         .and_then(|n| n.to_str())
         .unwrap_or("Untitled")
@@ -188,6 +192,7 @@ async fn save_file_as_dialog(
 
 /// Clears the currently opened file.
 #[tauri::command]
+#[allow(clippy::needless_pass_by_value)] // Tauri injects State by value
 fn clear_current_file(state: tauri::State<'_, EditorState>) -> Result<(), FileError> {
     *state
         .current_file_path
@@ -198,12 +203,13 @@ fn clear_current_file(state: tauri::State<'_, EditorState>) -> Result<(), FileEr
 
 /// Returns the filename of the currently opened file, if any.
 #[tauri::command]
+#[allow(clippy::needless_pass_by_value)] // Tauri injects State by value
 fn current_filename(state: tauri::State<'_, EditorState>) -> Result<Option<String>, FileError> {
     Ok(state
         .current_file_path
         .lock()
         .map_err(|_| FileError::IoError)?
-        .as_ref()
+        .as_deref()
         .map(filename_from_path))
 }
 
